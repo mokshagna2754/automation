@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import ContentCreator from "./ContentCreator";
 import ReviewSchedule from "./ReviewSchedule";
+import Connections from "./Connections";
 import Settings from "./Settings";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const getPageTitle = () => {
     const path = location.pathname;
     if (path.includes("/review")) return "Review & Schedule";
+    if (path.includes("/connections")) return "Connections";
     if (path.includes("/settings")) return "Settings";
     return "Create Content";
   };
@@ -57,6 +59,7 @@ const Dashboard = () => {
             <Route path="/" element={<ContentCreator />} />
             <Route path="/create" element={<ContentCreator />} />
             <Route path="/review" element={<ReviewSchedule />} />
+            <Route path="/connections" element={<Connections />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

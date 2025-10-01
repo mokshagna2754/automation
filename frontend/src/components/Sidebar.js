@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Zap, PlusCircle, Calendar, Settings, Sun, Moon, LogOut, X } from "lucide-react";
+import { Zap, PlusCircle, Calendar, Settings, Sun, Moon, LogOut, X, Link as LinkIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -20,6 +20,11 @@ const Sidebar = ({ onClose }) => {
       icon: Calendar,
       label: "Review & Schedule",
       path: "/dashboard/review"
+    },
+    {
+      icon: LinkIcon,
+      label: "Connections",
+      path: "/dashboard/connections"
     },
     {
       icon: Settings,
