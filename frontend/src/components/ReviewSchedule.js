@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Wand2, Hash, Calendar, Clock, Send, Edit3, Download, Copy } from "lucide-react";
+import { ArrowLeft, Wand2, Hash, Calendar as CalendarIcon, Clock, Send, Edit3, Download, Copy } from "lucide-react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Badge } from "./ui/badge";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { mockImproveWriting, mockSuggestHashtags } from "../utils/mockData";
 import { useToast } from "../hooks/use-toast";
+import { format } from "date-fns";
+import { cn } from "../lib/utils";
 
 const ReviewSchedule = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [editedCaptions, setEditedCaptions] = useState({});
   const [selectedPlatform, setSelectedPlatform] = useState("");
-  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledDate, setScheduledDate] = useState(null);
+  const [scheduledTime, setScheduledTime] = useState("12:00");
   const [loading, setLoading] = useState({ improve: false, hashtags: false });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -98,10 +103,14 @@ const ReviewSchedule = () => {
       return;
     }
 
+    const scheduledDateTime = new Date(scheduledDate);
+    const [hours, minutes] = scheduledTime.split(':');
+    scheduledDateTime.setHours(parseInt(hours), parseInt(minutes));
+
     // Mock scheduling - will be replaced with real implementation
     toast({
       title: "📅 Post Scheduled!",
-      description: `Your post has been scheduled for ${new Date(scheduledDate).toLocaleDateString()}.`,
+      description: `Your post has been scheduled for ${format(scheduledDateTime, "PPP 'at' p")}.`,
     });
   };
 
@@ -165,10 +174,12 @@ const ReviewSchedule = () => {
                   <Download className="w-4 h-4 mr-1" />
                   Download
                 </Button>
-                <Button variant="outline" size="sm">
-                  <Edit3 className="w-4 h-4 mr-1" />
-                  Regenerate
-                </Button>
+                {!generatedContent.isUploaded && (
+                  <Button variant="outline" size="sm">
+                    <Edit3 className="w-4 h-4 mr-1" />
+                    Regenerate
+                  </Button>
+                )}
               </div>
             </CardTitle>
           </CardHeader>
@@ -301,7 +312,7 @@ const ReviewSchedule = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5" />
+                <CalendarIcon className="w-5 h-5" />
                 <span>Schedule Post</span>
               </CardTitle>
             </CardHeader>
@@ -314,23 +325,57 @@ const ReviewSchedule = () => {
                   <Send className="w-4 h-4 mr-2" />
                   Publish Now
                 </Button>
-                <div className="flex space-x-2">
-                  <input
-                    type="datetime-local"
-                    value={scheduledDate}
-                    onChange={(e) => setScheduledDate(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "justify-start text-left font-normal",
+                            !scheduledDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {scheduledDate ? format(scheduledDate, "PPP") : "Pick date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={scheduledDate}
+                          onSelect={setScheduledDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <input
+                        type="time"
+                        value={scheduledTime}
+                        onChange={(e) => setScheduledTime(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      />
+                    </div>
+                  </div>
                   <Button
                     onClick={handleSchedulePost}
                     variant="outline"
-                    className="flex items-center space-x-1"
+                    className="w-full"
+                    disabled={!scheduledDate}
                   >
-                    <Clock className="w-4 h-4" />
-                    <span>Schedule</span>
+                    <CalendarIcon className="w-4 h-4 mr-2" />
+                    Schedule Post
                   </Button>
                 </div>
               </div>
+              {scheduledDate && (
+                <div className="text-sm text-gray-600 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg">
+                  <CalendarIcon className="w-4 h-4 inline mr-2" />
+                  Scheduled for: <strong>{format(new Date(scheduledDate.setHours(parseInt(scheduledTime.split(':')[0]), parseInt(scheduledTime.split(':')[1]))), "PPP 'at' p")}</strong>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
