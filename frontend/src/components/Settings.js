@@ -1,26 +1,23 @@
 import React, { useState } from "react";
-import { Key, Save, Eye, EyeOff, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
+import { User, Bell, Shield, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Alert, AlertDescription } from "./ui/alert";
 import { useToast } from "../hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Settings = () => {
-  const [apiKeys, setApiKeys] = useState({
-    gemini: "",
-    imagen: ""
-  });
-  const [showKeys, setShowKeys] = useState({
-    gemini: false,
-    imagen: false
-  });
-  const [savedKeys, setSavedKeys] = useState({
-    gemini: false,
-    imagen: false
-  });
+  const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
+  const [preferences, setPreferences] = useState({
+    defaultImageStyle: "photorealistic",
+    autoSaveDrafts: true,
+    emailNotifications: true,
+    darkMode: theme === "dark"
+  });
 
   const handleKeyChange = (service, value) => {
     setApiKeys({
