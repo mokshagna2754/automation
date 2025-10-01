@@ -42,127 +42,64 @@ const Settings = () => {
           Settings
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Configure your API keys to enable AI-powered content generation
+          Manage your account preferences and application settings
         </p>
       </div>
 
-      {/* API Keys Section */}
+      {/* Account Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Key className="w-5 h-5" />
-            <span>API Keys</span>
+            <User className="w-5 h-5" />
+            <span>Account Information</span>
           </CardTitle>
           <CardDescription>
-            Securely store your API keys to enable AI features. Your keys are encrypted and never shared.
+            Your account details and profile information
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Bring Your Own Key (BYOK):</strong> You're responsible for your API usage and costs. 
-              Keys are encrypted and stored securely in your account.
-            </AlertDescription>
-          </Alert>
-
-          {apiServices.map((service) => (
-            <div key={service.id} className="space-y-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {service.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {service.description}
-                  </p>
-                </div>
-                {savedKeys[service.id] && (
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                )}
-              </div>
-
-              <div className="space-y-3">
-                <Label htmlFor={`${service.id}-key`}>API Key</Label>
-                <div className="flex space-x-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id={`${service.id}-key`}
-                      type={showKeys[service.id] ? "text" : "password"}
-                      placeholder={service.placeholder}
-                      value={apiKeys[service.id]}
-                      onChange={(e) => handleKeyChange(service.id, e.target.value)}
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => toggleKeyVisibility(service.id)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                    >
-                      {showKeys[service.id] ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                  <Button
-                    onClick={() => handleSaveKey(service.id)}
-                    disabled={!apiKeys[service.id] || savedKeys[service.id]}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                  >
-                    <Save className="w-4 h-4 mr-1" />
-                    {savedKeys[service.id] ? "Saved" : "Save"}
-                  </Button>
-                  {apiKeys[service.id] && (
-                    <Button
-                      variant="outline"
-                      onClick={() => handleDeleteKey(service.id)}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {service.instructions}
-                </p>
-              </div>
-            </div>
-          ))}
-
-          {/* Status Summary */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
-              Feature Status
-            </h4>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-300">Image Generation</span>
-                <span className={`font-medium ${savedKeys.imagen ? "text-green-600" : "text-red-600"}`}>
-                  {savedKeys.imagen ? "✅ Ready" : "❌ API Key Required"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-300">Caption Generation</span>
-                <span className={`font-medium ${savedKeys.gemini ? "text-green-600" : "text-red-600"}`}>
-                  {savedKeys.gemini ? "✅ Ready" : "❌ API Key Required"}
-                </span>
-              </div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                value={user?.name || ""}
+                placeholder="Enter your full name"
+                readOnly
+                className="bg-gray-50 dark:bg-gray-800"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={user?.email || ""}
+                placeholder="Enter your email"
+                readOnly
+                className="bg-gray-50 dark:bg-gray-800"
+              />
             </div>
           </div>
+          <Button variant="outline" className="mt-4">
+            Update Profile
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Additional Settings */}
+      {/* App Preferences */}
       <Card>
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <Palette className="w-5 h-5" />
+            <span>Application Preferences</span>
+          </CardTitle>
           <CardDescription>
             Customize your Contentify AI experience
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-base">Default Image Style</Label>
@@ -170,12 +107,32 @@ const Settings = () => {
                 Choose your preferred image generation style
               </p>
             </div>
-            <select className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-              <option>Photorealistic</option>
-              <option>Artistic</option>
-              <option>Minimalist</option>
-              <option>Vibrant</option>
+            <select 
+              value={preferences.defaultImageStyle}
+              onChange={(e) => handlePreferenceChange("defaultImageStyle", e.target.value)}
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="photorealistic">Photorealistic</option>
+              <option value="artistic">Artistic</option>
+              <option value="minimalist">Minimalist</option>
+              <option value="vibrant">Vibrant</option>
             </select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-base">Theme</Label>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Choose between light and dark mode
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => handlePreferenceChange("darkMode", !preferences.darkMode)}
+              className="flex items-center space-x-2"
+            >
+              {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+            </Button>
           </div>
 
           <div className="flex items-center justify-between">
@@ -187,11 +144,26 @@ const Settings = () => {
             </div>
             <input
               type="checkbox"
-              defaultChecked
+              checked={preferences.autoSaveDrafts}
+              onChange={(e) => handlePreferenceChange("autoSaveDrafts", e.target.checked)}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
           </div>
+        </CardContent>
+      </Card>
 
+      {/* Notifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Bell className="w-5 h-5" />
+            <span>Notifications</span>
+          </CardTitle>
+          <CardDescription>
+            Choose what notifications you want to receive
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-base">Email Notifications</Label>
@@ -201,9 +173,50 @@ const Settings = () => {
             </div>
             <input
               type="checkbox"
-              defaultChecked
+              checked={preferences.emailNotifications}
+              onChange={(e) => handlePreferenceChange("emailNotifications", e.target.checked)}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-base">Push Notifications</Label>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Receive push notifications for important updates
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              defaultChecked={false}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Privacy & Security */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Shield className="w-5 h-5" />
+            <span>Privacy & Security</span>
+          </CardTitle>
+          <CardDescription>
+            Manage your privacy and security settings
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            <Button variant="outline" className="w-full md:w-auto">
+              Change Password
+            </Button>
+            <Button variant="outline" className="w-full md:w-auto">
+              Download My Data
+            </Button>
+            <Button variant="outline" className="w-full md:w-auto text-red-600 hover:text-red-700">
+              Delete Account
+            </Button>
           </div>
         </CardContent>
       </Card>
