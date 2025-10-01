@@ -19,78 +19,21 @@ const Settings = () => {
     darkMode: theme === "dark"
   });
 
-  const handleKeyChange = (service, value) => {
-    setApiKeys({
-      ...apiKeys,
-      [service]: value
+  const handlePreferenceChange = (key, value) => {
+    setPreferences({
+      ...preferences,
+      [key]: value
     });
-    setSavedKeys({
-      ...savedKeys,
-      [service]: false
-    });
-  };
 
-  const handleSaveKey = (service) => {
-    if (!apiKeys[service]) {
-      toast({
-        title: "Error",
-        description: "Please enter an API key first.",
-        variant: "destructive",
-      });
-      return;
+    if (key === "darkMode") {
+      toggleTheme();
     }
 
-    // Mock save - will be replaced with real backend call
-    setSavedKeys({
-      ...savedKeys,
-      [service]: true
-    });
-
     toast({
-      title: "✅ API Key Saved",
-      description: `Your ${service} API key has been saved securely.`,
+      title: "✅ Settings Updated",
+      description: "Your preferences have been saved.",
     });
   };
-
-  const handleDeleteKey = (service) => {
-    setApiKeys({
-      ...apiKeys,
-      [service]: ""
-    });
-    setSavedKeys({
-      ...savedKeys,
-      [service]: false
-    });
-
-    toast({
-      title: "🗑️ API Key Deleted",
-      description: `Your ${service} API key has been removed.`,
-    });
-  };
-
-  const toggleKeyVisibility = (service) => {
-    setShowKeys({
-      ...showKeys,
-      [service]: !showKeys[service]
-    });
-  };
-
-  const apiServices = [
-    {
-      id: "gemini",
-      name: "Google Gemini",
-      description: "For generating engaging social media captions and improving text",
-      placeholder: "Enter your Gemini API key",
-      instructions: "Get your API key from Google AI Studio (https://makersuite.google.com/app/apikey)"
-    },
-    {
-      id: "imagen",
-      name: "Google Imagen",
-      description: "For generating stunning images from text descriptions",
-      placeholder: "Enter your Imagen API key", 
-      instructions: "Get your API key from Google Cloud Console with Imagen API enabled"
-    }
-  ];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
