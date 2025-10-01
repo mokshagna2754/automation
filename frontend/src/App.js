@@ -49,6 +49,7 @@ function App() {
       <AuthProvider>
         <div className="App">
           <AppContent />
+          <Toaster />
         </div>
       </AuthProvider>
     </ThemeProvider>
