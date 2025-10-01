@@ -6,6 +6,7 @@ import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { Toaster } from "./components/ui/toaster";
 
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
